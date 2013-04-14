@@ -30,4 +30,44 @@ object NinetyNineProblems {
     }
     iter(l, List[Int]())
   }
+
+  def compress(l: List[Symbol]): List[Symbol] = {
+    def iter(l: List[Symbol], acc: List[Symbol]): List[Symbol] = l match {
+      case Nil => acc
+      case (s: Symbol) :: tail =>
+        if (acc.length > 0 && acc.last == s) iter(tail, acc)
+        else iter(tail, acc :+ s)
+    }
+    iter(l, List[Symbol]())
+  }
+
+  def pack(l: List[Symbol]): List[Any] = {
+    def listOf(s: Symbol, l: List[Symbol]): List[Symbol] = {
+      def iter(s: Symbol, l: List[Symbol], acc: List[Symbol]): List[Symbol] =
+        l match {
+          case Nil => acc :+ s
+          case (head: Symbol) :: tail => {
+            if (head == s) iter(s, tail, acc :+ s)
+            else acc :+ s
+          }
+      }
+      iter(s, l, List[Symbol]())
+    }
+    def next(s: Symbol, l: List[Symbol]): List[Symbol] = l match {
+      case Nil => List[Symbol]()
+      case (head: Symbol) :: tail => {
+        if (head == s) next(s, tail)
+        else l
+      }
+    }
+    def accumulate(l: List[Symbol], acc: List[Any]): List[Any] = {
+      l match {
+        case Nil => acc
+        case (s: Symbol) :: tail => {
+          accumulate(next(s, tail), acc :+ (listOf(s, tail)))
+        }
+      }
+    }
+    accumulate(l, List[Any]())
+  }
 }
