@@ -41,26 +41,26 @@ object NinetyNineProblems {
     iter(l, List[Symbol]())
   }
 
-  def pack(l: List[Symbol]): List[Any] = {
-    def listOf(s: Symbol, l: List[Symbol]): List[Symbol] = {
-      @tailrec
-      def iter(s: Symbol, l: List[Symbol], acc: List[Symbol]): List[Symbol] = l match {
-        case Nil => acc :+ s
-        case (head: Symbol) :: tail =>
-          if (head != s) acc :+ s
-          else iter(s, tail, acc :+ s)
-      }
-      iter(s, l, List[Symbol]())
-    }
-
+  def listOf(s: Symbol, l: List[Symbol]): List[Symbol] = {
     @tailrec
-    def next(s: Symbol, l: List[Symbol]): List[Symbol] = l match {
-      case Nil => List[Symbol]()
+    def iter(s: Symbol, l: List[Symbol], acc: List[Symbol]): List[Symbol] = l match {
+      case Nil => acc :+ s
       case (head: Symbol) :: tail =>
-        if (head != s) l
-        else next(s, tail)
+        if (head != s) acc :+ s
+        else iter(s, tail, acc :+ s)
     }
+    iter(s, l, List[Symbol]())
+  }
 
+  @tailrec
+  def next(s: Symbol, l: List[Symbol]): List[Symbol] = l match {
+    case Nil => List[Symbol]()
+    case (head: Symbol) :: tail =>
+      if (head != s) l
+      else next(s, tail)
+  }
+
+  def pack(l: List[Symbol]): List[Any] = {
     @tailrec
     def accumulate(l: List[Symbol], acc: List[Any]): List[Any] = l match {
       case Nil => acc
@@ -68,5 +68,18 @@ object NinetyNineProblems {
         accumulate(next(s, tail), acc :+ listOf(s, tail))
     }
     accumulate(l, List[Any]())
+  }
+
+  def encode(l: List[Symbol]): List[Tuple2[Int, Symbol]] = {
+    @tailrec
+    def accumulate(l: List[Symbol], acc: List[Tuple2[Int, Symbol]]): List[Tuple2[Int, Symbol]] =
+      l match {
+      case Nil => acc
+      case (head: Symbol) :: tail => {
+        val seq = listOf(head, tail)
+        accumulate(next(head, tail), acc :+ (seq length, head))
+      }
+    }
+    accumulate(l, List[Tuple2[Int, Symbol]]())
   }
 }
