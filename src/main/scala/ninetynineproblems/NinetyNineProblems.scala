@@ -4,16 +4,22 @@ import scala.annotation.tailrec
 
 object NinetyNineProblems {
 
+  // P01
   def last(l: List[Int]) = l.last
 
+  // P02
   def penultimate(l: List[Int]) = l.takeRight(2) head
 
+  // P03
   def nth(n: Int, l: List[Int]) = l(n)
 
+  // P04
   def length(l: List[Int]) = l length
 
+  // P05
   def reverse(l: List[Int]) = l reverse
 
+  // P06
   @tailrec
   def isPalindrome(l: List[Int]): Boolean = {
     if (l.length <= 1) true
@@ -21,6 +27,7 @@ object NinetyNineProblems {
     else isPalindrome(l.tail.take(l.length - 2))
   }
 
+  // P07
   def flatten(l: List[Any]): List[Int] = {
     def iter(l: List[Any], acc: List[Int]): List[Int] = l match {
       case Nil => acc
@@ -31,6 +38,7 @@ object NinetyNineProblems {
     iter(l, List[Int]())
   }
 
+  // P08
   def compress(l: List[Symbol]): List[Symbol] = {
     @tailrec
     def iter(l: List[Symbol], acc: List[Symbol]): List[Symbol] = l match {
@@ -41,6 +49,7 @@ object NinetyNineProblems {
     iter(l, List[Symbol]())
   }
 
+  // P09
   def listOf(s: Symbol, l: List[Symbol]): List[Symbol] = {
     @tailrec
     def iter(s: Symbol, l: List[Symbol], acc: List[Symbol]): List[Symbol] = l match {
@@ -70,6 +79,7 @@ object NinetyNineProblems {
     accumulate(l, List[Any]())
   }
 
+  // P10
   def encode(l: List[Symbol]): List[Tuple2[Int, Symbol]] = {
     @tailrec
     def accumulate(l: List[Symbol], acc: List[Tuple2[Int, Symbol]]): List[Tuple2[Int, Symbol]] =
@@ -81,5 +91,17 @@ object NinetyNineProblems {
       }
     }
     accumulate(l, List[Tuple2[Int, Symbol]]())
+  }
+
+  // P11
+  def encodeModified(l: List[Symbol]): List[Any] = {
+    def accumulate(l: List[Symbol], acc: List[Any]): List[Any] = l match {
+      case Nil => acc
+      case (head: Symbol) :: tail => {
+	val seq = listOf(head, tail)
+	accumulate(next(head, tail), acc :+ (if (seq.length == 1) head else (seq length, head)))
+      }
+    }
+    accumulate(l, List[Any]())
   }
 }
